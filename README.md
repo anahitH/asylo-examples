@@ -4,7 +4,7 @@ Simple applications partitioned with asylo
 This repository contains applications partitioned into a security sensitive and normal parts. Security sensitive partitions are running on secure hardware using Asylo framework.
 To pull docker image where asylo runs:
 
-``` 
+``` docker pull anahitik/asylo-framework```
 
 snake-asylo
 --------------------------------------
