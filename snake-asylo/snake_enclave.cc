@@ -28,8 +28,6 @@ public:
 
     snake_segment_t *head = &m_snake.body[m_snake.len - 1];
 
-    std::cout << "Score: " << m_screen.score << "\n";
-    std::cout << "high Score: " << m_screen.high_score << "\n";
     /* We're called after collide_object() so we know it's
      * a piece of gold at this position.  Eat it up! */
     m_screen.grid[head->row - 1][head->col - 1] = ' ';
