@@ -1,0 +1,13 @@
+#TODO: add this to a Makefile
+#TODO: set correct paths for libraries and includes, i.e. paths in opensgx
+#TODO: consider installing opensgx include and libs to system paths
+
+#Building non-enclave part
+ cc -g -Iinclude -Ishare/include -Wall -pedantic -Wno-unused-function -std=gnu11 -fno-stack-protector -fvisibility=hidden   -c -o snake.o snake.c
+ cc -g -Iinclude -Ishare/include -Wall -pedantic -Wno-unused-function -std=gnu11 -fno-stack-protector -fvisibility=hidden snake.o ../nonEncLib.o -o snake
+
+
+#Building enclave part
+cc -c -g -I../include -I../share/include -Wall -pedantic -Wno-unused-function -std=gnu11 -I../../libsgx/include -I../../libsgx/musl-libc/include -fno-stack-protector -static -fvisibility=hidden -o snake_enclave.o snake_enclave.c
+
+ cc -static -nostdlib -nostartfiles -Wl,-T,../sgx.lds snake_enclave.o -o snake_enclave ../../libsgx/sgx-entry.o ../../libsgx/libsgx.a ../../libsgx/libpolarssl-sgx.a ../../libsgx/libc-sgx.a
