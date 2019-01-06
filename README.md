@@ -13,3 +13,18 @@ Security sensitive partition includes ```eat_gold``` function. Security sensitiv
 To execute the game run following command from the ```snake-asylo``` directory.
 
 ```bazel run --config=enc-sim //snake-asylo:snake```
+
+snake-grpc
+------------------------------------
+Is the same partitioning this time using grpc. A grpc server runs inside an enclave and the client invokes server functions using grpc calls.
+To start the server inside an enclave run
+
+```bazel run --config=enc-sim //snake-asylo:snake```
+
+To build and run the client
+
+```
+cd client
+make
+./snake
+```
