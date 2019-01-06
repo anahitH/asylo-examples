@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package examples.grpc_server;
+
+message ReturnValue {
+  int32 eat_gold = 1;
+}
+
+message SnakeSegment {
+  int32 row = 1;
+  int32 col = 2;
+}
+
+message Snake {
+  uint32 speed = 1;
+  enum direction_t {
+	LEFT=0; RIGHT = 1; UP = 2; DOWN = 3; LEFT_TURN = 4; RIGHT_TURN = 5; QUIT = 6; NUM_KEYS = 7; }
+  direction_t direction = 2;
+  int32 len = 3;
+  repeated SnakeSegment body = 4;
+}
+
+message Screen {
+  int32 level = 1;
+  int32 score = 2;
+  int32 highScore = 3;
+  int32 gold = 4;
+  int32 obstacles = 5;
+  message cell {
+      repeated int32 cell = 1;
+  }
+  repeated cell grid = 6; 
+}
+
+// The EnclaveInput message that is passed to the enclave can be extended with
+// a Demo message to communicate a value our enclave knows to expect.
+message EnclaveInput {
+  Snake snake_in = 9001;
+  Screen screen_in = 9002;
+}
+
+// The EnclaveOutput message that is passed out of the enclave can be extended
+// with a Demo message to communicate a value our driver knows to expect.
+message EnclaveOutput {
+  Snake snake_out = 9001;
+  Screen screen_out = 9002;
+  ReturnValue ret = 9003;
+}
+
+service SnakeService {
+  rpc EatGold(EnclaveInput) returns (EnclaveOutput) {
+  }
+}
