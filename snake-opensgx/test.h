@@ -28,10 +28,10 @@
 
 #include <sys/stat.h>
 
-#include <sgx.h>
-#include <sgx-user.h>
-#include <sgx-kern.h>
-#include <sgx-lib.h>
+#include <opensgx/user/include/sgx.h>
+#include <opensgx/user/include/sgx-user.h>
+#include <opensgx/user/include/sgx-kern.h>
+#include <opensgx/libsgx/include/sgx-lib.h>
 
 #define is_aligned(addr, bytes) \
     ((((uintptr_t)(const void *)(addr)) & (bytes - 1)) == 0)
