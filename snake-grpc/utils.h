@@ -1,5 +1,5 @@
-#include "snake-grpc/snake.h"
-#include "snake-grpc/snake_server.pb.h"
+#include "snake.h"
+#include "snake_server.pb.h"
 
 direction_t getSnakeDirection(examples::grpc_server::Snake_direction_t dir);
 examples::grpc_server::Snake_direction_t getSnakeAsyloDirection(direction_t dir);

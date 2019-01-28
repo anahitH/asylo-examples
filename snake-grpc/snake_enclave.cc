@@ -67,6 +67,7 @@ class GrpcServerEnclave final : public asylo::TrustedApplication {
 asylo::Status GrpcServerEnclave::Initialize(
     const asylo::EnclaveConfig &enclave_config) LOCKS_EXCLUDED(server_mutex_) {
   // Fail if there is no server_address available.
+  LOG(INFO) << "blah";
   if (!enclave_config.HasExtension(server_address)) {
     return asylo::Status(asylo::error::GoogleError::INVALID_ARGUMENT,
                          "Expected a server_address extension on config.");

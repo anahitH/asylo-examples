@@ -45,10 +45,15 @@ cc_library(
     hdrs = ["snake.h", "conio.h", "utils.h",],
 )
 
+#cc_library(
+#    name = "snake_enclave_lib",
+#    deps = ["snake_enclave_lib.o",],
+#)
+
 # The implementation of the translation server.
 cc_library(
     name = "snake_server",
-    srcs = ["snake_server.cc", "utils.cc",],
+    srcs = [ "snake_enclave_lib.o", "snake_server.cc", "utils.cc",],
     hdrs = ["snake_server.h", "utils.h", "conio.h", "snake.h",],
     deps = [
         ":snake_server_grpc_proto",

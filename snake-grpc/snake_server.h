@@ -5,10 +5,11 @@
 #include <string>
 
 #include "absl/container/flat_hash_map.h"
-#include "snake-grpc/snake_server.grpc.pb.h"
+#include "snake_server.grpc.pb.h"
 #include "include/grpcpp/grpcpp.h"
 #include "include/grpcpp/server.h"
-#include "snake-grpc/snake.h"
+#include "snake.h"
+//#include "snake-grpc/snake.h"
 
 namespace examples {
 namespace grpc_server {
@@ -21,9 +22,6 @@ private:
   ::grpc::Status EatGold(::grpc::ServerContext *context,
                          const EnclaveInput *input,
                          EnclaveOutput *output) override;
-private:
-  void eat_gold();
-
 private:
   snake_t m_snake;
   screen_t m_screen;
