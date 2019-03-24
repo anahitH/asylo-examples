@@ -38,7 +38,7 @@ sim_enclave(
         "snake_enclave_lib.cc",
         "interface_selectors.h",
         "snake.h",
-        "conio.h",
+        "enclave_conio.h",
     ],
     copts = ASYLO_DEFAULT_COPTS,
     deps = [
