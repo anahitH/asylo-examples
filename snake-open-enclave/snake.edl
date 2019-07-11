@@ -1,0 +1,11 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+enclave {
+    include "snake.h"
+    trusted {
+	public int eat_gold ([in, out] snake_t *snake, [in, out] screen_t *screen);
+    };
+};
+
+
