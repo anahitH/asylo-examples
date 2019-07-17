@@ -1,3 +1,6 @@
+#include <openenclave/enclave.h>
+#include <stdio.h>
+#include "snake_t.h"
 #include "../snake.h"
 #include "../conio.h"
 
