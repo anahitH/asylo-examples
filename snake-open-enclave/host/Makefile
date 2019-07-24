@@ -19,10 +19,10 @@ LDFLAGS=$(shell pkg-config oehost-$(COMPILER) --libs)
 
 build:
 	@ echo "Compilers used: $(CC), $(CXX)"
-	oeedger8r ../snake.edl --untrusted
-	$(CC) -g -c $(CFLAGS) snake.c
-	$(CC) -g -c $(CFLAGS) snake_u.c
-	$(CC) -o snakehost snake_u.o snake.o $(LDFLAGS)
+	oeedger8r ../sgx.edl --untrusted
+	$(CC) -g -c $(CFLAGS) snake_app.cc
+	$(CC) -g -c $(CFLAGS) sgx_u.c
+	$(CC) -o snakehost sgx_u.o app_lib.o snake_app.o $(LDFLAGS)
 
 clean:
-	rm -f snakehost snake.o snake_u.o snake_u.c snake_u.h snake_args.h
+	rm -f snakehost snake.o sgx_u.o sgx_u.c sgx_u.h sgx_args.h

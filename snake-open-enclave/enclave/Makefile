@@ -24,16 +24,16 @@ all:
 
 build:
 	@ echo "Compilers used: $(CC), $(CXX)"
-	oeedger8r ../snake.edl --trusted
-	$(CC) -g -c $(CFLAGS) -DOE_API_VERSION=2 snake_enclave.c -o snake_enclave.o
-	$(CC) -g -c $(CFLAGS) -DOE_API_VERSION=2 snake_t.c -o snake_t.o
-	$(CC) -o snakeenc snake_t.o snake_enclave.o $(LDFLAGS)
+	oeedger8r ../sgx.edl --trusted
+	$(CC) -g -c $(CFLAGS) -DOE_API_VERSION=2 snake_enclave.cc -o snake_enclave.o
+	$(CC) -g -c $(CFLAGS) -DOE_API_VERSION=2 sgx_t.c -o sgx_t.o
+	$(CC) -o snakeenc sgx_t.o enclave_lib.o snake_enclave.o $(LDFLAGS)
 
 sign:
-	oesign sign -e snakeenc -c snake.conf -k private.pem
+	oesign sign -e snakeenc -c enclave.conf -k private.pem
 
 clean:
-	rm -f snake_enclave.o snakeenc snakeenc.signed private.pem public.pem snake_t.o snake_t.h snake_t.c snake_args.h
+	rm -f snake_enclave.o snakeenc snakeenc.signed private.pem public.pem sgx_t.o sgx_t.h sgx_t.c sgx_args.h
 
 keys:
 	openssl genrsa -out private.pem -3 3072

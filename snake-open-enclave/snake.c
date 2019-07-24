@@ -25,11 +25,9 @@
 #include <sys/time.h>
 #include <sys/wait.h>
 #include <time.h>
-#include <openenclave/host.h>
 
-#include "../conio.h"
-#include "../snake.h"
-#include "snake_u.h"
+#include "conio.h"
+#include "snake.h"
 
 #ifdef DEBUG
 #define DBG(fmt, args...) fprintf (stderr, fmt, ##args)
@@ -38,77 +36,7 @@
 #endif
 
 /* Default 0.2 sec between snake movement. */
-unsigned int usec_delay = DEFAULT_DELAY;
-
-oe_enclave_t* enclave = NULL;
-bool check_simulate_opt(int* argc, const char* argv[])
-{
-    for (int i = 0; i < *argc; i++)
-    {
-        if (strcmp(argv[i], "--simulate") == 0)
-        {
-            fprintf(stdout, "Running in simulation mode\n");
-            memmove(&argv[i], &argv[i + 1], (*argc - i) * sizeof(char*));
-            (*argc)--;
-            return true;
-        }
-    }
-    return false;
-}
-
-void terminate_enclave()
-{
-    if (enclave)
-        oe_terminate_enclave(enclave);
-}
-
-void create_enclave(int argc, const char* argv[])
-{
-    uint32_t flags = OE_ENCLAVE_FLAG_DEBUG;
-    if (check_simulate_opt(&argc, argv))
-    {
-        flags |= OE_ENCLAVE_FLAG_SIMULATE;
-    }
-
-    if (argc != 2)
-    {
-        fprintf(
-            stderr, "Usage: %s enclave_image_path [ --simulate  ]\n", argv[0]);
-	terminate_enclave();
-	return;
-    }
-
-    oe_result_t result = oe_create_snake_enclave(
-        argv[1], OE_ENCLAVE_TYPE_AUTO, flags, NULL, 0, &enclave);
-    if (result != OE_OK)
-    {
-        fprintf(
-            stderr,
-            "oe_create_snake_enclave(): result=%u (%s)\n",
-            result,
-            oe_result_str(result));
-	terminate_enclave();
-	return;
-    }
-}
-
-
-int unprotected_eat_gold(snake_t* snake, screen_t* screen)
-{
-	int result = 0;
-	oe_result_t oe_result = eat_gold(enclave, &result, snake, screen);
-	if (oe_result != OE_OK) {
-		fprintf(
-		stderr,
-		"calling into enclave_helloworld failed: result=%u (%s)\n",
-		oe_result,
-		oe_result_str(oe_result));
-		terminate_enclave();
-		exit(1);
-	}
-	printf("Returned value %d", result);
-	return result;
-}
+static unsigned int usec_delay = DEFAULT_DELAY;
 
 int sigsetup (int signo, void (*callback)(int))
 {
@@ -300,7 +228,7 @@ void setup_level (screen_t *screen, snake_t *snake, int level)
    //gotoxy (3, 1);
    //printf ("h:Help");
    gotoxy (30, 1);
-   //printf ("[ Micro Snake v%s ]", VERSION);
+//   printf ("[ Micro Snake v%s ]", VERSION);
 }
 
 void move (snake_t *snake, char keys[], char key)
@@ -478,9 +406,28 @@ int collision (snake_t *snake, screen_t *screen)
       collide_self (snake);
 }
 
-int main (int argc, const char* argv[])
+int eat_gold (snake_t *snake, screen_t *screen)
 {
-   create_enclave(argc, argv);
+   snake_segment_t *head = &snake->body[snake->len - 1];
+
+   /* We're called after collide_object() so we know it's
+    * a piece of gold at this position.  Eat it up! */
+   screen->grid[head->row - 1][head->col - 1] = ' ';
+
+   screen->gold--;
+   screen->score += snake->len * screen->obstacles;
+   snake->len++;
+
+   if (screen->score > screen->high_score)
+   {
+      screen->high_score = screen->score; /* New high score! */
+   }
+
+   return screen->gold;
+}
+
+int main (void)
+{
    char keypress;
    snake_t snake;
    screen_t screen;
@@ -521,7 +468,7 @@ int main (int argc, const char* argv[])
          else if (collide_object (&snake, &screen, GOLD))
          {
             /* If no gold left after consuming this one... */
-            if (!unprotected_eat_gold (&snake, &screen))
+            if (!eat_gold (&snake, &screen))
             {
                /* ... then go to next level. */
                setup_level (&screen, &snake, 0);

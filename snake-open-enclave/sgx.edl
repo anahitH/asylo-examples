@@ -1,0 +1,18 @@
+
+enclave {
+include "snake.h"
+include "conio.h"
+trusted {
+
+public void setup_level_protected([in, out] screen_t* screen, [in, out] snake_t* snake, int level);
+public void move_protected([in, out] snake_t* snake, [in, out] char* keys, char key);
+public int collide_object_protected([in, out] snake_t* snake, [in, out] screen_t* screen, char object);
+public int collision_protected([in, out] snake_t* snake, [in, out] screen_t* screen);
+public int eat_gold_protected([in, out] snake_t* snake, [in, out] screen_t* screen);
+}; // trusted
+untrusted {
+
+void show_score_app([in, out] screen_t* screen);
+void draw_line_app(int col, int row);
+}; // untrusted
+}; // enclave
